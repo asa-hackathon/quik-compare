@@ -90,7 +90,8 @@
             <div class="container-fluid">
                 <!-- Page Heading -->
 
-                <form action="api/add-mapping" method="post">
+                <form action="add-mapping" method="post">
+                    {!! csrf_field() !!}
                     <div class="form-group">
                         <label for="inputPassword">Category</label>
                         <select name="category" id="category" class="form-control" onchange="getSubCategory();">
@@ -132,6 +133,12 @@
                             <div class="form-group col-md-4">
                                 <label for="inputCity">Label</label>
                                 <input type="text" class="form-control configLabel" name="configLabel[]" placeholder="Your Label">
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="inputState">Value</label>
+                                <select class="form-control configType" name="configType[]">
+
+                                </select>
                             </div>
                             <div class="form-group col-md-4">
                                 <label for="inputState">Value</label>
