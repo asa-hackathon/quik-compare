@@ -3,13 +3,20 @@
 namespace App\Services;
 
 
+use App\Mapping;
+
 class ProductService
 {
 
-    public function getProductById($id)
+    public static function getProductById($subCatId, $id)
     {
-        $curl = curl_init();
+        $mapping = Mapping::where(['sub_cat_id' => $subCatId])->first();
 
+        if (!isset($mapping)) {
+            return [];
+        }
+
+        var_dump($mapping);
     }
 
 }

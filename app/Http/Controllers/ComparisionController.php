@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Mapping;
+use App\Services\ProductService;
 use Illuminate\Http\Request;
 
 class ComparisionController extends Controller
@@ -81,11 +82,28 @@ class ComparisionController extends Controller
         $subCatId = $request->get('subcat', null);
 
         // Base case
-        if (empty($csvIds) || empty($subCatId)) {
-            return [];
-        }
+        if (empty($csvIds) || empty($subCatId)) return [];
 
-        return [];
+        $mapping = Mapping::where(['sub_cat_id' => $subCatId])
+                    ->first();
+
+        if (empty($mapping)) return [];
+
+        $mapping = $mapping->toArray();
+
+        // Configuration
+        $url = $mapping['api_endpoint'];
+        $config = $mapping['config'];
+
+        dd(json_decode(Mapping::find(5)->config, true));
+
+        // Curl
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_HEADER, TRUE);
+        curl_setopt($curl, CURLOPT_NOBODY, TRUE); // remove body
+
+        return $mapping['config'];
     }
 
 }
