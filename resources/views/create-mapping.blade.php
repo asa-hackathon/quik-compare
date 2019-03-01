@@ -253,7 +253,6 @@ $(document).ready(function(){
             success: function(resp) {
               window.data = resp;
               if(resp) {
-                  var config = JSON.parse(resp[0].config);
                   $('#category option[value='+resp[0].category_id+']').attr('selected','selected');
                   getSubCategory();
                   $('#sub_category option[value='+resp[0].sub_category_id+']').attr('selected','selected');
@@ -261,28 +260,29 @@ $(document).ready(function(){
                   $('#api_endpoint_test').val(resp[0].api_endpoint_test);
                   $('#api_headers').val(resp[0].api_headers);
                   getApiResponseKeys(function() {
-                    if(config.length > 0) {
-                        $.each(config, function(key,value) {
-                            if(key != 0) {
-                              loadApiKeys();
-                            }
-                        });
+                        if(resp[0].config != '') {
+                            var config = JSON.parse(resp[0].config);
+                            $.each(config, function(key,value) {
+                                if(key != 0) {
+                                  loadApiKeys();
+                                }
+                            });
 
-                        $(".configValue").each(function(index) {
-                            //$(this).val(config[index].attribute);
-                            console.log("$(this) = ", $(this));
+                            $(".configValue").each(function(index) {
+                                //$(this).val(config[index].attribute);
+                                console.log("$(this) = ", $(this));
 
-                            $(this).find('option').filter(function() {
-                                //may want to use $.trim in here
-                                return $(this).val() == config[index].attribute; 
-                            }).attr('selected', true);
-                        });
+                                $(this).find('option').filter(function() {
+                                    //may want to use $.trim in here
+                                    return $(this).val() == config[index].attribute; 
+                                }).attr('selected', true);
+                            });
 
-                        $(".configLabel").each(function(index) {
-                            $(this).val(config[index].displayName);
-                            console.log( index + ": ");
-                        });
-                  }
+                            $(".configLabel").each(function(index) {
+                                $(this).val(config[index].displayName);
+                                console.log( index + ": ");
+                            });
+                      }
                   });
                   
               }
