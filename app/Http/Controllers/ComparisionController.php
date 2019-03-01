@@ -32,7 +32,7 @@ class ComparisionController extends Controller
                 [
                     "id" => 1,
                     "title" => "Sobha City",
-                    "image" => "/r1/20170726/ak_1503_2110338818-1501053955_300x300.jpeg",
+                    "image" => "/r1/20170731/ak_1200_1396257863-1501504007_300x300.png",
                     "fields" => [
                         "Price" => 1200000,
                         "Area (in Sqft)" => 1300,
