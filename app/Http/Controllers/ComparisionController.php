@@ -32,7 +32,7 @@ class ComparisionController extends Controller
                 [
                     "id" => 1,
                     "title" => "Sobha City",
-                    "image" => "i5/20181003/2-BHK-1468-Sq-ft-Apartment-for-Sale-in-Yelahanaka--Bangalore-VB201705171774173-ak_LWBP1131831532-1538567833nr424x318sm124x93sq88x66lg728x546gv262x175.jpeg",
+                    "image" => "/r1/20170726/ak_1503_2110338818-1501053955_300x300.jpeg",
                     "fields" => [
                         "Price" => 1200000,
                         "Area (in Sqft)" => 1300,
@@ -46,7 +46,7 @@ class ComparisionController extends Controller
                 [
                     "id" => 2,
                     "title" => "RES Residency",
-                    "image" => "i5/20181003/2-BHK-1468-Sq-ft-Apartment-for-Sale-in-Yelahanaka--Bangalore-VB201705171774173-ak_LWBP1131831532-1538567833nr424x318sm124x93sq88x66lg728x546gv262x175.jpeg",
+                    "image" => "r1/20170731/ak_1200_1324575520-1501504002_300x300.jpeg",
                     "fields" => [
                         "Price" => 1200000,
                         "Area (in Sqft)" => 1300,
@@ -60,7 +60,7 @@ class ComparisionController extends Controller
                 [
                     "id" => 3,
                     "title" => "Manyata Residency",
-                    "image" => "i5/20181003/2-BHK-1468-Sq-ft-Apartment-for-Sale-in-Yelahanaka--Bangalore-VB201705171774173-ak_LWBP1131831532-1538567833nr424x318sm124x93sq88x66lg728x546gv262x175.jpeg",
+                    "image" => "r1/20170731/ak_1200_1422121845-1501504007_300x300.jpeg",
                     "fields" => [
                         "Price" => 19000000,
                         "Area (in Sqft)" => 1300,
