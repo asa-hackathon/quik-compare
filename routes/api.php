@@ -1,6 +1,6 @@
 <?php
 
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,3 +19,4 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 
 Route::post('add-mapping', array('as' => 'add-mapping', 'uses' => 'MappingController@addMapping'));
+Route::get('compare', 'ComparisionController@compare');
