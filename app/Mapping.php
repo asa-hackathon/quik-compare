@@ -8,6 +8,4 @@ class Mapping extends Model
 {
     protected $table = "mapping";
 
-
-
 }
