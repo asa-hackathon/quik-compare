@@ -90,7 +90,7 @@
             <div class="container-fluid">
                 <!-- Page Heading -->
 
-                <hr action="api/add-mapping" method="post">
+                <form action="api/add-mapping" method="post">
                     <div class="form-group">
                         <label for="inputPassword">Category</label>
                         <select name="category" id="category" class="form-control" onchange="getSubCategory();">
@@ -114,7 +114,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="inputPassword">Test ID</label>
-                                <input type="text" name="test_id" id="test_id" class="form-control" placeholder="Exact API Endpoint">
+                                <input type="text" name="test_id" id="test_id" class="form-control" placeholder="Test ID">
                             </div>
                         </div>
                         <div class="col-md-6">

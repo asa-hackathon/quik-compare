@@ -101,6 +101,9 @@
 
         <!-- Begin Page Content -->
         <div class="container-fluid">
+          @if(Session::has("error-message"))
+            <div class="alert alert-danger">{{ Session::get("error-message")  }}}</div>
+          @endif
           <!-- Page Heading -->
            <!-- DataTales Example start -->
           <div class="card shadow mb-4" style="font-size: 13px">

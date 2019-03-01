@@ -6,6 +6,7 @@ use App\Mapping;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
 use DB;
+use Illuminate\Support\Facades\Session;
 
 const API_ENDPOINT_ID_PLACEHOLDER = '*****';
 
@@ -43,13 +44,18 @@ class MappingController extends BaseController
         return $category;        
     }
 
-    public function addMapping() {
+    public function addMapping(Request $request) {
         $config = "";
     	$category = isset($_POST['category']) ? (int) $_POST['category'] : '';
     	$sub_category = isset($_POST['sub_category']) ? (int) $_POST['sub_category'] : '';
     	$api_endpoint = isset($_POST['api_endpoint']) ? $_POST['api_endpoint'] : '';
         $api_headers = isset($_POST['api_headers']) ? $_POST['api_headers'] : '';
         $test_id = isset($_POST['test_id']) ? $_POST['test_id'] : '';
+
+        if(Mapping::where(['sub_cat_id' => $sub_category])->first()) {
+            Session::flash("error-message", "Sub category already registered");
+            return redirect()->route('mapping-dashboard');
+        }
 
         if(isset($_POST['configValue']) && isset($_POST['configValue'])) {
             $configMain = array();
