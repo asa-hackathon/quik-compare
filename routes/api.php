@@ -23,5 +23,6 @@ Route::get('compare', 'ComparisionController@compare');
 Route::get('do-compare', 'ComparisionController@doCompare');
 Route::get('get-category', 'MappingController@getCategory');
 Route::get('get-sub-category', 'MappingController@getSubCategory');
+Route::get('get-mapping-data', 'MappingController@getMappingData');
+Route::get('get-api-key-pairs', 'MappingController@getApiDropDownParams');
 
-Route::get('test', 'ComparisionController@test');
