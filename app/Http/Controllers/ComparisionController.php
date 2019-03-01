@@ -32,6 +32,7 @@ class ComparisionController extends Controller
                 [
                     "id" => 1,
                     "title" => "Sobha City",
+                    "image" => "i6/20180711/2025-Sq-ft-Residential-Villa-for-rent-in-Kaza--Guntur-VB201705171774173-ak_LWBP612469700-1531287282nr424x318sm124x93sq88x66lg728x546gv262x175.png",
                     "fields" => [
                         [
                             "Price" => 1200000,
@@ -47,6 +48,7 @@ class ComparisionController extends Controller
                 [
                     "id" => 2,
                     "title" => "RES Residency",
+                    "image" => "i6/20180711/2025-Sq-ft-Residential-Villa-for-rent-in-Kaza--Guntur-VB201705171774173-ak_LWBP612469700-1531287282nr424x318sm124x93sq88x66lg728x546gv262x175.png",
                     "fields" => [
                         [
                             "Price" => 1200000,
@@ -62,6 +64,7 @@ class ComparisionController extends Controller
                 [
                     "id" => 3,
                     "title" => "Manyata Residency",
+                    "image" => "i6/20180711/2025-Sq-ft-Residential-Villa-for-rent-in-Kaza--Guntur-VB201705171774173-ak_LWBP612469700-1531287282nr424x318sm124x93sq88x66lg728x546gv262x175.png",
                     "fields" => [
                         [
                             "Price" => 19000000,
