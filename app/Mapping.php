@@ -8,4 +8,8 @@ class Mapping extends Model
 {
     protected $table = "mapping";
 
+    public static function trasformAttributes($subCatId, $respnse) {
+    	
+    }
+
 }
