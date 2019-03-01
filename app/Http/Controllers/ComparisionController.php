@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Mapping;
-use App\Services\ProductService;
 use Illuminate\Http\Request;
+
+const API_ENDPOINT_ID_PLACEHOLDER = '*****';
 
 class ComparisionController extends Controller
 {
@@ -78,32 +79,73 @@ class ComparisionController extends Controller
 
 
     public function doCompare(Request $request) {
-        $csvIds = $request->get('ids', null);
         $subCatId = $request->get('subcat', null);
+        $csvProductIds = $request->get('ids', null);
 
-        // Base case
-        if (empty($csvIds) || empty($subCatId)) return [];
+        // Validate the parameters
+        if (empty($subCatId) || empty($csvProductIds)) {
+            return [];
+        }
 
+        $productIds = explode(',', $csvProductIds);
+
+        // Supported comparision is 2 or 3
+        if (count($productIds) != 2 && count($productIds) != 3) {
+            return [];
+        }
+
+        // Get the mapping from the database
         $mapping = Mapping::where(['sub_cat_id' => $subCatId])
                     ->first();
 
-        if (empty($mapping)) return [];
+        // If no mapping found, return
+        if (empty($mapping)) {
+            return [];
+        }
 
         $mapping = $mapping->toArray();
 
         // Configuration
-        $url = $mapping['api_endpoint'];
-        $config = $mapping['config'];
+        $endpoint = $mapping['api_endpoint'];
 
-        dd(json_decode(Mapping::find(5)->config, true));
+        // Return if the API end point doesn't have a id placeholder
+        if (!str_contains($endpoint, API_ENDPOINT_ID_PLACEHOLDER)) {
+            return [];
+        }
 
-        // Curl
-        $curl = curl_init();
-        curl_setopt($curl, CURLOPT_URL, $url);
-        curl_setopt($curl, CURLOPT_HEADER, TRUE);
-        curl_setopt($curl, CURLOPT_NOBODY, TRUE); // remove body
+        $products = [];
 
-        return $mapping['config'];
+        foreach ($productIds as $productId) {
+            $productUrl = str_replace(API_ENDPOINT_ID_PLACEHOLDER, $productId, $endpoint);
+            $headers = empty($mapping['api_headers']) ? [] : json_decode($mapping['api_headers'], true);
+
+            if (empty($headers)) {
+                $headers = [];
+            }
+
+            $curlHeaders = ["Content-Type: application/json"];
+
+            foreach ($headers as $key => $value) {
+                $curlHeaders[] = $key . ': ' . $value;
+            }
+
+            // Curl
+            $curl = curl_init();
+            curl_setopt($curl, CURLOPT_URL, $productUrl);
+            curl_setopt($curl, CURLOPT_HTTPHEADER, $curlHeaders);
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+
+            $response = curl_exec($curl);
+            $products[] = json_decode($response, true);
+        }
+
+        $comparision = [];
+
+        foreach ($products as $product) {
+            $comparision[] = Mapping::trasformAttributes($subCatId, $product);
+        }
+
+        return $comparision;
     }
 
     public function test(Request $request)

@@ -19,6 +19,11 @@
   <!-- Custom styles for this template-->
   <link href="{!! asset('css/sb-admin-2.min.css') !!}" rel="stylesheet">
   <link href="{!! asset('css/dataTables.bootstrap4.min.css') !!}" rel="stylesheet">
+  <style>
+    table td.nowrap {
+      white-space: nowrap;
+    }
+  </style>
 
 </head>
 
@@ -32,9 +37,6 @@
 
       <!-- Sidebar - Brand -->
       <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
-        <div class="sidebar-brand-icon rotate-n-15">
-          <i class="fas fa-laugh-wink"></i>
-        </div>
         <div class="sidebar-brand-text mx-3">Quik Compare <sup></sup></div>
       </a>
 
@@ -93,7 +95,7 @@
             <i class="fa fa-bars"></i>
           </button>
 
-          <div class="navbar-brand">Create Mapping</div>
+          <div class="navbar-brand">Configuration</div>
         </nav>
         <!-- End of Topbar -->
 
@@ -101,7 +103,7 @@
         <div class="container-fluid">
           <!-- Page Heading -->
            <!-- DataTales Example start -->
-          <div class="card shadow mb-4">
+          <div class="card shadow mb-4" style="font-size: 13px">
             <div class="card-body">
               <div class="table-responsive">
                 <table class="table table-bordered" id="mappintTable" width="100%" cellspacing="0">
@@ -132,12 +134,18 @@
                       foreach($data as $key => $val) {
                      ?>
                     <tr>
-                      <td><?php echo $i; ?></td>
-                      <td><?php echo $val->Category; ?></td>
-                      <td><?php echo $val->SubCat; ?></td>
-                      <td><?php echo $val->api_endpoint; ?></td>
-                      <td><?php echo $val->config; ?></td>
-                      <td><a href="/create-mapping?id=<?php echo $val->id; ?>">Edit</td>
+                      <td class="nowrap"><?php echo $i; ?></td>
+                      <td class="nowrap"><?php echo $val->Category; ?></td>
+                      <td class="nowrap"><?php echo $val->SubCat; ?></td>
+                      <td>
+                        <code><?php echo $val->api_endpoint; ?></code>
+                      </td>
+                      <td>
+                        <code>
+                          <?php echo $val->config; ?>
+                        </code>
+                      </td>
+                      <td><a href="/create-mapping?id=<?php echo $val->id; ?>">Edit</a></td>
                     </tr>
                     <?php $i++; } } ?>
 
@@ -189,7 +197,12 @@
   <script src="{!! asset('js/dataTables.bootstrap4.min.js') !!}"></script>
 <script type="text/javascript">
 $(document).ready(function() {
-    $('#mappintTable').DataTable();
+    $('#mappintTable').DataTable({
+      "scrollX": true,
+      "paging":   false,
+      "info":     false,
+      "ordering": false,
+    });
 });
 </script>  
 </body>

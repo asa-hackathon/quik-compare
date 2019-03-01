@@ -31,9 +31,6 @@
 
       <!-- Sidebar - Brand -->
       <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
-        <div class="sidebar-brand-icon rotate-n-15">
-          <i class="fas fa-laugh-wink"></i>
-        </div>
         <div class="sidebar-brand-text mx-3">Quik Compare <sup></sup></div>
       </a>
 
@@ -92,8 +89,7 @@
             <i class="fa fa-bars"></i>
           </button>
 
-            <div class="navbar-brand">Configuration</div>
-
+          <div class="navbar-brand">Add Configuration</div>
         </nav>
         <!-- End of Topbar -->
 
@@ -149,7 +145,7 @@
                   </select>
                 </div>
                 <div class="form-group col-md-2">
-                  <input type="button" class="btn btn-success" style="margin-top: 19%" value="Add" id="addNew">
+                  <input type="button" class="btn btn-success" value="Add" id="addNew">
                 </div>
                 <div class="form-group col-md-2" style="display: none;">
                   <input type="button" class="btn btn-danger" style="margin-top: 19%" value="Delete" id="delete">
