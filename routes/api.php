@@ -20,3 +20,5 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::post('add-mapping', array('as' => 'add-mapping', 'uses' => 'MappingController@addMapping'));
 Route::get('compare', 'ComparisionController@compare');
+Route::get('get-category', 'MappingController@getCategory');
+Route::get('get-sub-category', 'MappingController@getSubCategory');

@@ -12,13 +12,13 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('dashboard');
 });
 
 Route::get('/dashboard', function () {
     return view('dashboard');
 });
 
-Route::get('/create-mapping', function () {
-    return view('create-mapping');
-});
+Route::get('/create-mapping', array('as' => 'create-mapping', 'uses' => 'MappingController@showCreateMapping'));
+
+Route::get('mapping-dashboard', array('as' => 'mapping-dashboard', 'uses' => 'MappingController@mappingDashboard'));

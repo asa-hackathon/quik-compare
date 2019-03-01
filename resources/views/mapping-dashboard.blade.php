@@ -18,6 +18,7 @@
 
   <!-- Custom styles for this template-->
   <link href="{!! asset('css/sb-admin-2.min.css') !!}" rel="stylesheet">
+  <link href="{!! asset('css/dataTables.bootstrap4.min.css') !!}" rel="stylesheet">
 
 </head>
 
@@ -332,15 +333,51 @@
 
         <!-- Begin Page Content -->
         <div class="container-fluid">
-
           <!-- Page Heading -->
-          <h1 class="h3 mb-2 text-gray-800">Create Your Own Compare</h1>
-          <p class="mb-4">Chart.js is a third party plugin that is used to generate the charts in this theme. The charts below have been customized - for further customization options, please visit the <a target="_blank" href="https://www.chartjs.org/docs/latest/">official Chart.js documentation</a>.</p>
+          <h1 class="h3 mb-2 text-gray-800">Create Mapping</h1>
+           <!-- DataTales Example start -->
+          <div class="card shadow mb-4">
+            <div class="card-header py-3">
+              <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
+            </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-bordered" id="mappintTable" width="100%" cellspacing="0">
+                  <thead>
+                    <tr>
+                      <th>Category</th>
+                      <th>Sub Category</th>
+                      <th>API</th>
+                      <th>Config</th>
+                    </tr>
+                  </thead>
+                  <tfoot>
+                    <tr>
+                      <th>Category</th>
+                      <th>Sub Category</th>
+                      <th>API</th>
+                      <th>Config</th>
+                    </tr>
+                  </tfoot>
+                  <tbody>
+                    <?php
+                    if(!empty($data)) {
+                      foreach($data as $key => $val) {
+                     ?>
+                    <tr>
+                      <td><?php echo $val->Category; ?></td>
+                      <td><?php echo $val->SubCat; ?></td>
+                      <td><?php echo $val->api_endpoint; ?></td>
+                      <td><?php echo $val->config; ?></td>
+                    </tr>
+                    <?php } } ?>
 
-          <!-- Content Row -->
-          <div class="row">
-
+                  </tbody>
+                </table>
+              </div>
+            </div>
           </div>
+          <!-- DataTales Example End -->
 
         </div>
         <!-- /.container-fluid -->
@@ -397,12 +434,12 @@
 
   <!-- Custom scripts for all pages-->
   <script src="{!! asset('js/sb-admin-2.min.js') !!}"></script>
-
-  <!-- Page level plugins -->
-  <script src="{!! asset('js/Chart.min.js') !!}"></script>
-
-  <!-- Page level custom scripts -->
-  <script src="{!! asset('js/chart-area-demo.js') !!}"></script>
-  <script src="{!! asset('js/chart-pie-demo.js') !!}"></script> 
+  <script src="{!! asset('js/jquery.dataTables.min.js') !!}"></script>
+  <script src="{!! asset('js/dataTables.bootstrap4.min.js') !!}"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+    $('#mappintTable').DataTable();
+});
+</script>  
 </body>
 </html>

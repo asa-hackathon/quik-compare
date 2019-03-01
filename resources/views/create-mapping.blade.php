@@ -64,8 +64,8 @@
         <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Custom Components:</h6>
-            <a class="collapse-item" href="create-mapping">Create Mapping</a>
-            <!--<a class="collapse-item" href="cards.html">Cards</a>-->
+            <a class="collapse-item" href="create-mapping">Add</a>
+            <a class="collapse-item" href="mapping-dashboard">Dashboard</a>
           </div>
         </div>
       </li>
@@ -332,29 +332,26 @@
 
         <!-- Begin Page Content -->
         <div class="container-fluid">
-
           <!-- Page Heading -->
-          <h1 class="h3 mb-2 text-gray-800">Create Mapping</h1>
+          <h1 class="h3 mb-2 text-gray-800">Quik Compare</h1>
           <form action="api/add-mapping" method="post">
               <div class="form-group">
-                  <label for="inputEmail">Category / Vertical</label>
-                  <select name="vertical" class="form-control">
-                    <option value="1">Commonfloor</option>
-                    <option value="2">Quikr Homes</option>
-                    <option value="3">Quikr Cars</option>
-                    <option value="4">Quikr Services</option>
+                  <label for="inputPassword">Category</label>
+                  <select name="category" id="category" class="form-control" onchange="getSubCategory();">
+                     <option value="">---Select Vertical---</option>
+                    <?php foreach ($vertical as $key => $value) { ?>
+                      <option value="<?php echo $value->cat_id; ?>"><?php echo $value->category_name; ?></option>
+                    <?php } ?>
                   </select>
               </div>
               <div class="form-group">
                   <label for="inputPassword">Sub Category</label>
-                  <select name="sub_category" class="form-control">
-                    <option value="1">Sale</option>
-                    <option value="2">Rent</option>
+                  <select name="sub_category" id="sub_category" class="form-control">
                   </select>
               </div>
               <div class="form-group">
                   <label for="inputPassword">API Endpoint</label>
-                  <input type="text" name="end_point" class="form-control" placeholder="API End Point">
+                  <input type="text" name="api_endpoint" class="form-control" placeholder="API End Point">
               </div>
               <button type="submit" class="btn btn-primary">Submit</button>
           </form>
@@ -414,5 +411,51 @@
 
   <!-- Custom scripts for all pages-->
   <script src="{!! asset('js/sb-admin-2.min.js') !!}"></script>
+
+
+<script type="text/javascript">
+  function getCategory() {
+      var vertical = document.getElementById("vertical");
+      var verticalId = vertical.options[vertical.selectedIndex].value;
+      let vertical_id = 
+      $.ajax({
+        url : '/api/get-category?vertical_id='+verticalId,
+        type: "get",
+        dataType: "json",
+        success: function(resp) {
+          var genTableData="";
+          if(resp) {
+            var options = "";
+            $.each(resp, function(key_1,value) {
+                options+= '<option value="'+value.id+'">'+value.name+'</option>';
+            });
+            $('#category').html(options);
+          }
+        }  
+      });       
+  }
+
+  function getSubCategory() {
+      var category = document.getElementById("category");
+      var categoryId = category.options[category.selectedIndex].value;
+      $.ajax({
+        url : '/api/get-sub-category?category_id='+categoryId,
+        type: "get",
+        dataType: "json",
+        success: function(resp) {
+          var genTableData="";
+          if(resp) {
+            var options = "";
+            $.each(resp, function(key_1,value) {
+                options+= '<option value="'+value.subcat_id+'">'+value.subcat_name+'</option>';
+            });
+            $('#sub_category').html(options);
+          }
+        }  
+      });       
+  }  
+
+</script>
+
 </body>
 </html>
