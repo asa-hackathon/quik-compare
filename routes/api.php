@@ -23,3 +23,5 @@ Route::get('compare', 'ComparisionController@compare');
 Route::get('do-compare', 'ComparisionController@doCompare');
 Route::get('get-category', 'MappingController@getCategory');
 Route::get('get-sub-category', 'MappingController@getSubCategory');
+
+Route::get('test', 'ComparisionController@test');
