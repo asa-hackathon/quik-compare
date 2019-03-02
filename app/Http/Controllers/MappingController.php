@@ -51,8 +51,9 @@ class MappingController extends BaseController
     	$api_endpoint = isset($_POST['api_endpoint']) ? $_POST['api_endpoint'] : '';
         $api_headers = isset($_POST['api_headers']) ? $_POST['api_headers'] : '';
         $test_id = isset($_POST['test_id']) ? $_POST['test_id'] : '';
+        $product_id = isset($_POST['mapping_old_id']) ? $_POST['mapping_old_id'] : '';
 
-        if(Mapping::where(['sub_cat_id' => $sub_category])->first()) {
+        if(!$product_id && Mapping::where(['sub_cat_id' => $sub_category])->first()) {
             Session::flash("error-message", "Sub category already registered");
             return redirect()->route('mapping-dashboard');
         }
@@ -60,19 +61,48 @@ class MappingController extends BaseController
         if(isset($_POST['configValue']) && isset($_POST['configValue'])) {
             $configMain = array();
             for($i=0 ; $i < count($_POST['configValue']); $i++) {
-                $configMain[] = array("displayName" => $_POST['configLabel'][$i], "attribute" => $_POST['configValue'][$i]);
+
+                if ("attribute" == $_POST['configType'][$i]) {
+                    $configMain[] = [
+                        "displayName" => $_POST['configLabel'][$i],
+                        "attribute" => $_POST['configValue'][$i]
+                    ];
+                } elseif ("computed" == $_POST['configType'][$i]) {
+                    $configMain[] = [
+                        "displayName" => $_POST['configLabel'][$i],
+                        "expression" => $_POST['configValue'][$i]
+                    ];
+                }
             }
-            $config = json_encode($configMain);                    
+
+            $config = json_encode($configMain);
         }
 
         if(!empty($_POST['mapping_old_id'])) {
             $id = $_POST['mapping_old_id'];
-            $query = "update mapping set category = '$category', sub_cat_id = '$sub_category', api_endpoint = '$api_endpoint', test_id = '$test_id', api_headers = '$api_headers', config = '$config' where id = $id";
+
+            DB::table('mapping')
+                ->where(['id' => $id])
+                ->update([
+                    'category' => $category,
+                    'sub_cat_id' => $sub_category,
+                    'api_endpoint' => $api_endpoint,
+                    'test_id' => $test_id,
+                    'api_headers' => $api_headers,
+                    'config' => $config,
+                ]);
         } else {
-            $query = "insert into mapping (category, sub_cat_id, api_endpoint, test_id, api_headers, config) values ('$category', '$sub_category', '$api_endpoint', '$test_id', '$api_headers', '$config')";
+            DB::table('mapping')
+                ->insert([
+                    'category' => $category,
+                    'sub_cat_id' => $sub_category,
+                    'api_endpoint' => $api_endpoint,
+                    'test_id' => $test_id,
+                    'api_headers' => $api_headers,
+                    'config' => $config,
+                ]);
         }
-    	$addMapping = DB::insert($query);
-        $category = $this->getCategory();
+
         return redirect()->route('mapping-dashboard');
     }
 

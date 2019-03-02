@@ -132,28 +132,48 @@
                         <div class="form-row">
                             <div class="form-group col-md-4">
                                 <label for="inputCity">Label</label>
-                                <input type="text" class="form-control configLabel" name="configLabel[]" placeholder="Your Label">
+                                <input type="text" class="form-control configLabel" name="configLabel[]" readonly value="Title">
                             </div>
                             <div class="form-group col-md-4">
                                 <label for="inputState">Value</label>
                                 <select class="form-control configType" name="configType[]">
-
+                                    <option value="attribute" selected>Attribute</option>
+                                    <option value="computed">Computed</option>
                                 </select>
+                            </div>
+                            <div class="form-group col-md-4 type-wrapper">
+                                <label for="inputState">Value</label>
+                                <select class="form-control configValue" data-type="attribute" name="configValue[]"></select>
+                                <textarea class="form-control" data-type="computed" hidden disabled name="configValue[]" placeholder="Expression"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-4">
+                                <label for="inputCity">Label</label>
+                                <input type="text" class="form-control configLabel" name="configLabel[]" readonly value="Banner Image">
                             </div>
                             <div class="form-group col-md-4">
                                 <label for="inputState">Value</label>
-                                <select class="form-control configValue" name="configValue[]">
+                                <select class="form-control configType" name="configType[]">
+                                    <option value="attribute">Attribute</option>
+                                    <option value="computed">Computed</option>
                                 </select>
                             </div>
-                            <div class="form-group">
-                                <input type="button" class="btn btn-success" value="Add" id="addNew">
-                                <input type="button" class="btn btn-danger" style="display: none;" value="Delete" id="delete">
+                            <div class="form-group col-md-4 type-wrapper">
+                                <label for="inputState">Value</label>
+                                <select class="form-control configValue" data-type="attribute" name="configValue[]"></select>
+                                <textarea class="form-control" data-type="computed" hidden disabled name="configValue[]" placeholder="Expression"></textarea>
                             </div>
                         </div>
                         <br>
+                        <div id="appendConfig"></div>
+                        <div class="form-row">
+                            <div class="form-group col-md-2 float-right">
+                                <input type="button" class="btn btn-block btn-success" style="margin-top: 19%" value="Add" id="addNew">
+                            </div>
+                        </div>
                     <?php endif; ?>
 
-                    <div id="appendConfig"></div>
                     <input type="hidden" name="mapping_old_id" value="<?php echo !empty($_GET['id']) ? $_GET['id'] : ''; ?>">
                     <input type="submit" class="btn btn-primary" value="submit">
                 </form>
@@ -261,25 +281,71 @@
                         getApiResponseKeys(resp[0].sub_category_id, function() {
                             if(resp[0].config != '') {
                                 var config = JSON.parse(resp[0].config);
-                                $.each(config, function(key,value) {
-                                    if(key != 0) {
+
+                                if (config.length > 2) {
+                                    var filteredConfigs = config.filter((obj) => {
+                                        return obj.displayName.toLowerCase() !== 'banner image' && obj.displayName.toLowerCase() !== 'title';
+                                    });
+
+                                    $.each(filteredConfigs, function(key,value) {
                                         loadApiKeys();
-                                    }
+                                    });
+                                }
+
+                                $(".configLabel").each(function(index) {
+                                    $(this).val(config[index].displayName);
+                                    // console.log( index + ": ");
+                                });
+
+                                $('.configType').each(function (index) {
+                                    $(this).find('option').filter(function() {
+                                        return $(this).val() === 'computed' && config[index].expression;
+                                    }).attr('selected', true);
+
+                                    $(this).find('option').filter(function() {
+                                        return $(this).val() === 'attribute' && config[index].attribute;
+                                    }).attr('selected', true);
                                 });
 
                                 $(".configValue").each(function(index) {
-                                    //$(this).val(config[index].attribute);
-                                    console.log("$(this) = ", $(this));
-
                                     $(this).find('option').filter(function() {
                                         //may want to use $.trim in here
                                         return $(this).val() == config[index].attribute;
                                     }).attr('selected', true);
                                 });
 
-                                $(".configLabel").each(function(index) {
-                                    $(this).val(config[index].displayName);
-                                    console.log( index + ": ");
+                                $(".type-wrapper").each(function(index) {
+                                    //$(this).val(config[index].attribute);
+                                    var elAttributeFormField = $(this).find('[data-type="attribute"]');
+                                    var elExpressionFormField = $(this).find('[data-type="computed"]');
+
+                                    console.log(index);
+
+                                    if (config[index].hasOwnProperty('attribute')) {
+                                        elExpressionFormField.attr('hidden', 'hidden');
+                                        elExpressionFormField.attr('disabled', 'disabled');
+
+                                        elAttributeFormField.removeAttr('hidden');
+                                        elAttributeFormField.removeAttr('disabled');
+                                        elAttributeFormField.val(config[index].attribute);
+                                    } else if (config[index].hasOwnProperty('expression')) {
+                                        elAttributeFormField.attr('hidden', 'hidden');
+                                        elAttributeFormField.attr('disabled', 'disabled');
+
+                                        elExpressionFormField.removeAttr('hidden');
+                                        elExpressionFormField.removeAttr('disabled');
+                                        elExpressionFormField.val(config[index].expression);
+                                    }
+                                });
+
+                                $(document).on('change', '.configType', (ev) => {
+                                    var target = ev.currentTarget;
+                                    var elType = $(target).parent().parent().find('[data-type="' + target.value + '"]');
+                                    elType.removeAttr('hidden');
+                                    elType.removeAttr('disabled');
+
+                                    elType.siblings('.form-control').attr('hidden', 'hidden');
+                                    elType.siblings('.form-control').attr('disabled', 'disabled');
                                 });
                             }
                         });
@@ -304,18 +370,23 @@
     function loadApiKeys() {
         var html = `
         <div class="form-row">
-          <div class="form-group col-md-4">
+          <div class="form-group col-md-3">
             <label for="inputCity">Label</label>
             <input type="text" class="form-control configLabel" name="configLabel[]" placeholder="Your Label">
           </div>
-          <div class="form-group col-md-4">
+            <div class="form-group col-md-3">
+                <label for="inputState">Value</label>
+                <select class="form-control configType" name="configType[]">
+                    <option value="attribute">Attribute</option>
+                    <option value="computed">Computed</option>
+                </select>
+            </div>
+          <div class="form-group col-md-4 type-wrapper">
             <label for="inputState">Value</label>
-            <select class="form-control configValue" name="configValue[]">${window.data.options}</select>
+            <select class="form-control configValue" data-type="attribute" name="configValue[]">${window.data.options}</select>
+            <textarea class="form-control" data-type="computed" hidden disabled name="configValue[]" placeholder="Expression"></textarea>
           </div>
-          <div class="form-group col-md-2">
-            <input type="button" class="btn btn-success" style="margin-top: 19%" value="Add" id="addNew">
-          </div>
-          <div class="form-group col-md-2">
+          <div class="form-group col-md-2 text-right">
             <input type="button" class="btn btn-danger" style="margin-top: 19%" value="Delete" id="delete">
           </div>
         </div>
