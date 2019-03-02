@@ -136,18 +136,18 @@
                         <h4 class="h4 mt-4">Mapping</h4>
                         <div class="form-row">
                             <div class="form-group col-md-4">
-                                <label for="inputCity">Label</label>
+                                <label for="inputCity">Field Label</label>
                                 <input type="text" class="form-control configLabel" name="configLabel[]" readonly value="Title">
                             </div>
                             <div class="form-group col-md-4">
-                                <label for="inputState">Value</label>
+                                <label for="inputState">Field Type</label>
                                 <select class="form-control configType" name="configType[]">
                                     <option value="attribute" selected>Attribute</option>
                                     <option value="computed">Computed</option>
                                 </select>
                             </div>
                             <div class="form-group col-md-4 type-wrapper">
-                                <label for="inputState">Value</label>
+                                <label for="inputState">Field Value</label>
                                 <select class="form-control configValue" data-type="attribute" name="configValue[]"></select>
                                 <textarea class="form-control" data-type="computed" hidden disabled name="configValue[]" placeholder="Expression"></textarea>
                             </div>
