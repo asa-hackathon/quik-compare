@@ -116,7 +116,6 @@
                       <th>Category</th>
                       <th>Sub Category</th>
                       <th>API</th>
-                      <th>Config</th>
                       <th>Edit</th>
                     </tr>
                   </thead>
