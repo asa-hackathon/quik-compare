@@ -240,7 +240,7 @@
             });
     }
 
-    function getSubCategory() {
+    function getSubCategory(callback) {
         var category = document.getElementById("category");
         var categoryId = category.options[category.selectedIndex].value;
         $.ajax({
@@ -255,6 +255,10 @@
                         options+= '<option value="'+value.subcat_id+'">'+value.subcat_name+'</option>';
                     });
                     $('#sub_category').html(options);
+
+                    if (callback && 'function' === typeof callback) {
+                        callback();
+                    }
                 }
             }
         });
@@ -273,11 +277,14 @@
                     window.data = resp;
                     if(resp) {
                         $('#category option[value='+resp[0].category_id+']').attr('selected','selected');
-                        getSubCategory();
-                        $('#sub_category option[value='+resp[0].sub_category_id+']').attr('selected','selected');
                         $('#api_endpoint').val(resp[0].api_endpoint);
                         $('#test_id').val(resp[0].test_id);
                         $('#api_headers').val(resp[0].api_headers);
+
+                        getSubCategory(function() {
+                            $('#sub_category option[value='+resp[0].sub_category_id+']').attr('selected','selected');
+                        });
+
                         getApiResponseKeys(resp[0].sub_category_id, function() {
                             if(resp[0].config != '') {
                                 var config = JSON.parse(resp[0].config);
