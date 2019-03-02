@@ -15,6 +15,11 @@
 
     <!-- Custom styles for this template-->
     <link href="{!! asset('css/sb-admin-2.min.css') !!}" rel="stylesheet">
+    <style>
+        form, input, select, textarea {
+            font-size: 13px !important;
+        }
+    </style>
 </head>
 
 <body id="page-top">
@@ -121,7 +126,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="inputPassword">API Headers</label>
-                                <textarea name="api_headers" id="api_headers" class="form-control" placeholder="Api Headers" style="height: 120px"></textarea>
+                                <textarea name="api_headers" id="api_headers" class="form-control" placeholder="Api Headers" style="height: 110px"></textarea>
                             </div>
                         </div>
                     </div>
