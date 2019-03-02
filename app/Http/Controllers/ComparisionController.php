@@ -87,8 +87,7 @@ class ComparisionController extends Controller
             return [];
         }
 
-        $productIds = explode(',', $csvProductIds);
-
+        $productIds = array_values(array_unique(array_filter(explode(',', $csvProductIds))));
         // Supported comparision is 2 or 3
         if (count($productIds) != 2 && count($productIds) != 3) {
             return [];
@@ -136,22 +135,53 @@ class ComparisionController extends Controller
             curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 
             $response = curl_exec($curl);
+            $status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+
+            if (200 != $status) {
+                curl_close($curl);
+                continue;
+            }
+
             $products[] = json_decode($response, true);
+            curl_close($curl);
         }
 
+        // Supported comparision is 2 or 3
+        if (count($products) != 2 && count($products) != 3) {
+            return [];
+        }
+
+        // Start the comparision
         $comparision = [];
 
-        foreach ($products as $product) {
-            $comparision[] = Mapping::trasformAttributes($subCatId, $product);
+        // Add the fields to the response
+        $comparision["fields"] = array_column(json_decode($mapping['config']), "displayName");
+
+        // TODO: Remove the hard coded fields
+        array_splice($comparision["fields"], 0, 2);
+
+        // Finally start adding the products
+        $comparision["products"] = [];
+
+        foreach ($products as $idx => $product) {
+            $fields = Mapping::trasformAttributes($subCatId, $product);
+
+            // TODO: Remove the hard coded fields
+            $data = [
+                "id" => $productIds[$idx],
+                "title" => $fields["Title"],
+                "image" => $fields["Banner Image"]
+            ];
+
+            // TODO:
+            unset($fields["Title"], $fields["Banner Image"]);
+
+            $data["fields"] = $fields;
+
+            $comparision["products"][] = $data;
         }
 
         return $comparision;
-    }
-
-    public function test(Request $request)
-    {
-        // dd($request->sub_cat_id);
-        return response()->json(['result' => Mapping::trasformAttributes($request->sub_cat_id, $this->mockData())]);
     }
 
     private function mockData() {
