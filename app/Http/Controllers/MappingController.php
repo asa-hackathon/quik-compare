@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Foundation\Bus\DispatchesJobs;
+use App\Mapping;
+use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
-use Illuminate\Foundation\Validation\ValidatesRequests;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use DB;
+use Illuminate\Support\Facades\Session;
+
+const API_ENDPOINT_ID_PLACEHOLDER = '*****';
 
 class MappingController extends BaseController
 {
@@ -27,7 +29,7 @@ class MappingController extends BaseController
 
     public function getMappingData() {
         $id = $_GET['id'];
-        $select = DB::select("SELECT parent_category_name as CategoryName, category_name as SubCatName, map.api_endpoint, map. config, map.id, map.category as category_id, map.sub_cat_id as sub_category_id, map.api_endpoint_test, map.api_headers FROM `mapping` as map inner join  categories as cat ON map.`sub_cat_id` = cat.`cat_id` where id=$id");
+        $select = DB::select("SELECT parent_category_name as CategoryName, category_name as SubCatName, map.api_endpoint, map. config, map.id, map.category as category_id, map.sub_cat_id as sub_category_id, map.test_id, map.api_headers FROM `mapping` as map inner join  categories as cat ON map.`sub_cat_id` = cat.`cat_id` where id=$id");
         return $select;
     }
 
@@ -42,44 +44,103 @@ class MappingController extends BaseController
         return $category;        
     }
 
-    public function addMapping() {
+    public function addMapping(Request $request) {
         $config = "";
     	$category = isset($_POST['category']) ? (int) $_POST['category'] : '';
     	$sub_category = isset($_POST['sub_category']) ? (int) $_POST['sub_category'] : '';
     	$api_endpoint = isset($_POST['api_endpoint']) ? $_POST['api_endpoint'] : '';
         $api_headers = isset($_POST['api_headers']) ? $_POST['api_headers'] : '';
-        $api_endpoint_test = isset($_POST['api_endpoint_test']) ? $_POST['api_endpoint_test'] : '';
+        $test_id = isset($_POST['test_id']) ? $_POST['test_id'] : '';
+        $product_id = isset($_POST['mapping_old_id']) ? $_POST['mapping_old_id'] : '';
+
+        if(!$product_id && Mapping::where(['sub_cat_id' => $sub_category])->first()) {
+            Session::flash("error-message", "Sub category already registered");
+            return redirect()->route('mapping-dashboard');
+        }
+
         if(isset($_POST['configValue']) && isset($_POST['configValue'])) {
             $configMain = array();
             for($i=0 ; $i < count($_POST['configValue']); $i++) {
-                $configMain[] = array("displayName" => $_POST['configLabel'][$i], "attribute" => $_POST['configValue'][$i]);
+
+                if ("attribute" == $_POST['configType'][$i]) {
+                    $configMain[] = [
+                        "displayName" => $_POST['configLabel'][$i],
+                        "attribute" => $_POST['configValue'][$i]
+                    ];
+                } elseif ("computed" == $_POST['configType'][$i]) {
+                    $configMain[] = [
+                        "displayName" => $_POST['configLabel'][$i],
+                        "expression" => $_POST['configValue'][$i]
+                    ];
+                }
             }
-            $config = json_encode($configMain);                    
+
+            $config = json_encode($configMain);
         }
 
         if(!empty($_POST['mapping_old_id'])) {
             $id = $_POST['mapping_old_id'];
-            $query = "update mapping set category = '$category', sub_cat_id = '$sub_category', api_endpoint = '$api_endpoint', api_endpoint_test = '$api_endpoint_test', api_headers = '$api_headers', config = '$config' where id = $id";
+
+            DB::table('mapping')
+                ->where(['id' => $id])
+                ->update([
+                    'category' => $category,
+                    'sub_cat_id' => $sub_category,
+                    'api_endpoint' => $api_endpoint,
+                    'test_id' => $test_id,
+                    'api_headers' => $api_headers,
+                    'config' => $config,
+                ]);
         } else {
-            $query = "insert into mapping (category, sub_cat_id, api_endpoint, api_endpoint_test, api_headers, config) values ('$category', '$sub_category', '$api_endpoint', '$api_endpoint_test', '$api_headers', '$config')";
+            DB::table('mapping')
+                ->insert([
+                    'category' => $category,
+                    'sub_cat_id' => $sub_category,
+                    'api_endpoint' => $api_endpoint,
+                    'test_id' => $test_id,
+                    'api_headers' => $api_headers,
+                    'config' => $config,
+                ]);
         }
-    	$addMapping = DB::insert($query);
-        $category = $this->getCategory();
+
         return redirect()->route('mapping-dashboard');
     }
 
-    public function getApiDropDownParams() {
-        $api = base64_decode($_GET['api']);
-        $headers = !empty($_GET['headers']) ? (array) json_decode(base64_decode($_GET['headers'])) : '';
-        
-        #$api = 'http://reprod-38-101.com:8080/realestate/v1/getAd?horizontalId=nvsapwq8qlojsb3q&source=cf&id[]=1';
-        #$headers = array("x-quikr-client:realestate.Desktop");
-        self::getKeyDropDowns($api,$headers);        
+    public function getApiDropDownParams(Request $request) {
+        $subCatId = $request->get('subCatId');
+        $configuration = Mapping::where(['sub_cat_id' => $subCatId])->first();
+
+        if (empty($configuration)) {
+            return [];
+        }
+
+        $configuration = $configuration->toArray();
+        $apiEndpoint = $configuration['api_endpoint'];
+        $test_id = $configuration['test_id'];
+
+        // Return if the API end point doesn't have a id placeholder
+        if (!str_contains($apiEndpoint, API_ENDPOINT_ID_PLACEHOLDER) || empty($test_id)) {
+            return [];
+        }
+
+        $headers = empty($configuration['api_headers']) ? [] : json_decode($configuration['api_headers'], true);
+
+        if (empty($headers)) {
+            $headers = [];
+        }
+
+        $curlHeaders = [];
+        $testEndpoint = str_replace(API_ENDPOINT_ID_PLACEHOLDER, $test_id, $apiEndpoint);
+
+        foreach ($headers as $key => $value) {
+            $curlHeaders[] = $key . ': ' . $value;
+        }
+
+        self::getKeyDropDowns($testEndpoint, $headers);
         return $this->returnData;
     }
 
     public function getKeyDropDowns($apiEndpointUrl, $headers){
-
         $headerData = array();
         $curl_obj = curl_init();
         $headerData[] = "Content-Type:application/json";

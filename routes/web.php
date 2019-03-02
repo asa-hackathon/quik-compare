@@ -20,5 +20,5 @@ Route::get('/dashboard', function () {
 });
 
 Route::get('/create-mapping', array('as' => 'create-mapping', 'uses' => 'MappingController@showCreateMapping'));
-
+Route::post('/add-mapping', array('as' => 'add-mapping', 'uses' => 'MappingController@addMapping'));
 Route::get('/mapping-dashboard', array('as' => 'mapping-dashboard', 'uses' => 'MappingController@mappingDashboard'));
