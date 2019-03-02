@@ -126,7 +126,6 @@
                       <th>Category</th>
                       <th>Sub Category</th>
                       <th>API</th>
-                      <th>Config</th>
                       <th>Edit</th>
                     </tr>
                   </tfoot>
@@ -143,7 +142,6 @@
                       <td>
                         <code><?php echo $val->api_endpoint; ?></code>
                       </td>
-                      <td><button class="btn btn-sm btn-info">Preview</button>
                       </td>
                       <td><a href="/create-mapping?id=<?php echo $val->id; ?>">Edit</a></td>
                     </tr>
