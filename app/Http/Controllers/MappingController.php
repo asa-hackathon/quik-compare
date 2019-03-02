@@ -21,7 +21,7 @@ class MappingController extends BaseController
         return view('create-mapping', ['vertical' => $category]);
     }
 	public function mappingDashboard() {
-		$select = DB::select("SELECT parent_category_name as Category, category_name as SubCat, map.api_endpoint, map. config, map.id FROM `mapping` as map inner join  categories as cat ON map.`sub_cat_id` = cat.`cat_id`");
+		$select = DB::select("SELECT parent_category_name as Category, category_name as SubCat, map.api_endpoint, map. config, map.id FROM `mapping` as map inner join  categories as cat ON map.`sub_cat_id` = cat.`cat_id` order by map.id desc");
 		return view('mapping-dashboard', ['data' => $select]);
 	}
 
