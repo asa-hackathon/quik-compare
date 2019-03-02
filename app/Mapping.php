@@ -22,8 +22,7 @@ class Mapping extends Model
             }
 
             $jsonConfigData = json_decode($configData->config, true);
-            // $jsonConfigData = Mapping::modelMockData();
-            // dd($jsonConfigData);
+
             foreach ($jsonConfigData as $value) {
                 if (isset($value['attribute'])) {
                     $returnData[$value['displayName']] = Helper::parseAttribute($response, $value['attribute']);
@@ -32,7 +31,6 @@ class Mapping extends Model
                 }
             }
 
-            // dd($returnData);
             return $returnData;
         } catch (\Throwable $e) {
             Log::error('Error occurred in ' . __METHOD__ . ' : ' . $e->getMessage());

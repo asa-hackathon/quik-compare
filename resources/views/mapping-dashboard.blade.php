@@ -143,10 +143,7 @@
                       <td>
                         <code><?php echo $val->api_endpoint; ?></code>
                       </td>
-                      <td>
-                        <code>
-                          <?php echo $val->config; ?>
-                        </code>
+                      <td><button class="btn btn-sm btn-info">Preview</button>
                       </td>
                       <td><a href="/create-mapping?id=<?php echo $val->id; ?>">Edit</a></td>
                     </tr>
