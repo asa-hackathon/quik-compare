@@ -164,11 +164,7 @@ class ComparisionController extends Controller
         $comparision["products"] = [];
 
         foreach ($products as $idx => $product) {
-            $fields = Mapping::trasformAttributes($subCatId, $product);
-
-            if (0 == count($fields)) {
-                continue;
-            }
+            $fields = Mapping::transformAttributes($subCatId, $product);
 
             // TODO: Remove the hard coded fields
             $data = [

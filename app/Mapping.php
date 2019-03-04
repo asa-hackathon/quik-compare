@@ -4,14 +4,13 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Helpers\Helper;
-use Exception;
 use Log;
 
 class Mapping extends Model
 {
     protected $table = "mapping";
 
-    public static function trasformAttributes($subCatId, $response) {
+    public static function transformAttributes($subCatId, $response) {
         try {
             $returnData = [];
             $configData = Mapping::where(['sub_cat_id' => $subCatId])
@@ -36,37 +35,6 @@ class Mapping extends Model
             Log::error('Error occurred in ' . __METHOD__ . ' : ' . $e->getMessage());
             return [];
         }
-    }
-
-    private static function modelMockData() {
-        return json_decode(
-            '[
-              {
-                "displayName": "Product Name",
-                "attribute": "data.propertySnippet.title"
-              },
-              {
-                "displayName": "Price",
-                "attribute": "data.propertySnippet.price"
-              },
-              {
-                "displayName": "Carpet Area",
-                "attribute": "data.propertySnippet.area"
-              },
-              {
-                "displayName": "Rating",
-                "expression": "$abcd = $response[\'data\'][\'propertySnippet\'][\'area\'] * 0.1;return $abcd+999;"
-              },
-              {
-                "displayName": "Area",
-                "expression": "$response[\'data\'][\'propertySnippet\'][\'area\'] * 2000;"
-              },
-              {
-                "displayName": "Built Up Area",
-                "expression": "return data:propertySnippet:area"
-              }
-            ]'
-            ,true);
     }
 
 }

@@ -14,7 +14,11 @@ class Helper
         }
 
         return array_reduce($pathArray, function ($v1,$v2) {
-            return $v1[$v2];
+            if($v1 != null) {
+                return isset($v1[$v2]) ? $v1[$v2] : null;
+            } else {
+                return null;
+            }
         }, $object);
     }
 
